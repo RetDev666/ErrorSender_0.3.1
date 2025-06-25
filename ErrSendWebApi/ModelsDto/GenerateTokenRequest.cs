@@ -11,7 +11,7 @@ namespace ErrSendWebApi.ModelsDto
         /// Ім'я користувача для токена
         /// </summary>
         [Required]
-        public string Username { get; set; } = string.Empty;
+        public string Username { get; set; } 
 
         /// <summary>
         /// Додаткові ролі користувача (необов'язково)
@@ -21,7 +21,7 @@ namespace ErrSendWebApi.ModelsDto
         /// <summary>
         /// Час життя токена в хвилинах (за замовчуванням 60)
         /// </summary>
-        public int ExpiryMinutes { get; set; } = 60;
+        public int ExpiryMinutes { get; set; } 
 
         /// <summary>
         /// Додаткові клейми (claims) для токена (необов'язково)

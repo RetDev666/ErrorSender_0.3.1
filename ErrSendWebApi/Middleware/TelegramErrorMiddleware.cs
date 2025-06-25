@@ -28,7 +28,6 @@ namespace ErrSendWebApi.Middleware
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Виникла необроблена виняткова ситуація");
                 
                 // Відправляємо помилку в Telegram в background
                 _ = Task.Run(async () => await SendErrorToTelegramAsync(ex, context));
@@ -39,14 +38,12 @@ namespace ErrSendWebApi.Middleware
 
         private async Task SendErrorToTelegramAsync(Exception exception, HttpContext context)
         {
-            try
-            {
+        
                 using var scope = serviceScopeFactory.CreateScope();
                 var telegramService = scope.ServiceProvider.GetService<ITelegramService>();
                 
                 if (telegramService == null)
                 {
-                    logger.LogWarning("Telegram cервіс не зареєстровано, пропускаю сповіщення про помилку");
                     return;
                 }
 
@@ -70,20 +67,7 @@ namespace ErrSendWebApi.Middleware
                     AdditionalInfo = errorReport.AdditionalInfo,
                     Timestamp = DateTime.UtcNow
                 });
-
-                if (result.IsSuccess)
-                {
-                    logger.LogInformation("Повідомлення про помилку успішно відправлено в Telegram");
-                }
-                else
-                {
-                    logger.LogWarning("Не вдалося надіслати повідомлення про помилку в Telegram: {Message}", result.Message);
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Не вдалося надіслати повідомлення про помилку в Telegram");
-            }
+                
         }
     }
 } 

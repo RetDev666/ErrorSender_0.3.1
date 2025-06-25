@@ -59,7 +59,6 @@ namespace ErrSendWebApi.Controllers
                     Status = "ER",
                     ErrorCode = 500
                 };
-                executionStatus.Errors.Add($"Внутрішня помилка сервера: {ex.Message}");
 
                 return StatusCode(500, new
                 {

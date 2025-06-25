@@ -11,13 +11,13 @@ namespace ErrSendApplication.DTO
         /// Ім'я користувача або email
         /// </summary>
         [Required(ErrorMessage = "Username є обов'язковим")]
-        public string Username { get; set; } = string.Empty;
+        public string Username { get; set; } 
 
         /// <summary>
         /// Пароль користувача
         /// </summary>
         [Required(ErrorMessage = "Password є обов'язковим")]
-        public string Password { get; set; } = string.Empty;
+        public string Password { get; set; } 
     }
 
     /// <summary>
@@ -28,12 +28,12 @@ namespace ErrSendApplication.DTO
         /// <summary>
         /// JWT Access токен
         /// </summary>
-        public string AccessToken { get; set; } = string.Empty;
+        public string AccessToken { get; set; } 
 
         /// <summary>
         /// Refresh токен для оновлення
         /// </summary>
-        public string RefreshToken { get; set; } = string.Empty;
+        public string RefreshToken { get; set; } 
 
         /// <summary>
         /// Час закінчення дії токена (UTC)
@@ -55,7 +55,7 @@ namespace ErrSendApplication.DTO
         /// Refresh токен
         /// </summary>
         [Required(ErrorMessage = "RefreshToken є обов'язковим")]
-        public string RefreshToken { get; set; } = string.Empty;
+        public string RefreshToken { get; set; } 
     }
 
     /// <summary>
@@ -67,7 +67,7 @@ namespace ErrSendApplication.DTO
         /// Назва API ключа
         /// </summary>
         [Required(ErrorMessage = "Name є обов'язковим")]
-        public string Name { get; set; } = string.Empty;
+        public string Name { get; set; } 
 
         /// <summary>
         /// Дата закінчення дії (опціонально)
@@ -83,12 +83,12 @@ namespace ErrSendApplication.DTO
         /// <summary>
         /// API ключ
         /// </summary>
-        public string ApiKey { get; set; } = string.Empty;
+        public string ApiKey { get; set; } 
 
         /// <summary>
         /// Назва ключа
         /// </summary>
-        public string Name { get; set; } = string.Empty;
+        public string Name { get; set; } 
 
         /// <summary>
         /// Дата створення

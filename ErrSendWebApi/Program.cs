@@ -25,21 +25,7 @@ namespace ErrSendWebApi
                 // TODO: Додати логування в БД коли буде підключена БД
                 // .WriteTo.MSSqlServer(connectionString, "Logs")
                 .CreateLogger();
-
-            try
-            {
-                Log.Information("Запуск API ErrorSender...");
-                var host = CreateHostBuilder(args).Build();
-                host.Run();
-            }
-            catch (Exception ex)
-            {
-                Log.Fatal(ex, "Заявку несподівано завершено");
-            }
-            finally
-            {
-                Log.CloseAndFlush();
-            }
+            
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

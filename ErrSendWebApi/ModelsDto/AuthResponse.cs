@@ -8,6 +8,6 @@ namespace ErrSendWebApi.ModelsDto
         /// <summary>
         /// JWT токен для авторизації
         /// </summary>
-        public string Token { get; set; } = string.Empty;
+        public string Token { get; set; } 
     }
 } 

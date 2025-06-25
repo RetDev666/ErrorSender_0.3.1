@@ -11,18 +11,18 @@ namespace ErrSendPersistensTelegram.Services
 {
     public class TelegramService : ITelegramService
     {
-        private readonly IHttpClientWr _httpClient;
-        private readonly TelegramConfig _config;
-        private readonly ILogger<TelegramService> _logger;
+        private readonly IHttpClientWr httpClient;
+        private readonly TelegramConfig config;
+        private readonly ILogger<TelegramService> logger;
 
         public TelegramService(
             IHttpClientWr httpClient,
             IOptions<TelegramConfig> config,
             ILogger<TelegramService> logger)
         {
-            _httpClient = httpClient;
-            _config = config.Value;
-            _logger = logger;
+            this.httpClient = httpClient;
+            this.config = config.Value;
+            this.logger = logger;
         }
 
         public async Task<SendErrorToTelegramResponse> SendErrorAsync(ErrorReport errorReport)
@@ -32,7 +32,7 @@ namespace ErrSendPersistensTelegram.Services
                 var message = FormatErrorMessage(errorReport);
                 var telegramMessage = new
                 {
-                    chat_id = _config.ChatId,
+                    chat_id = config.ChatId,
                     text = message,
                     parse_mode = "HTML"
                 };
@@ -40,9 +40,9 @@ namespace ErrSendPersistensTelegram.Services
                 var json = JsonSerializer.Serialize(telegramMessage);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                var url = $"{_config.BaseUrl}{_config.BotToken}/sendMessage";
+                var url = $"{config.BaseUrl}{config.BotToken}/sendMessage";
                 
-                var response = await _httpClient.PostAsync(url, content);
+                var response = await httpClient.PostAsync(url, content);
                 var responseContent = await response.Content.ReadAsStringAsync();
 
                 if (response.IsSuccessStatusCode)
@@ -52,27 +52,22 @@ namespace ErrSendPersistensTelegram.Services
                     return new SendErrorToTelegramResponse
                     {
                         IsSuccess = true,
-                        Message = "Помилка успішно відправлена в Telegram",
                         TelegramMessageId = telegramResponse?.Result?.MessageId.ToString() ?? ""
                     };
                 }
                 else
                 {
-                    _logger.LogError("Не вдалося відправити повідомлення в Telegram: {Response}", responseContent);
                     return new SendErrorToTelegramResponse
                     {
                         IsSuccess = false,
-                        Message = $"Помилка API Telegram: {responseContent}"
                     };
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Виникла помилка під час надсилання повідомлення в Telegram");
                 return new SendErrorToTelegramResponse
                 {
                     IsSuccess = false,
-                    Message = $"Виняток: {ex.Message}"
                 };
             }
         }

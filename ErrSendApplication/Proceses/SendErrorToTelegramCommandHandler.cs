@@ -27,24 +27,19 @@ namespace ErrSendApplication.Proceses
         {
             try
             {
-                logger.LogInformation("Помилка надсилання на адресу Telegram: {ErrorMessage}", request.ErrorReport.ErrorMessage);
 
                 var errorReport = mapper.Map<ErrorReport>(request.ErrorReport);
                 errorReport.Timestamp = DateTime.UtcNow;
 
                 var result = await telegramService.SendErrorAsync(errorReport);
 
-                logger.LogInformation("Помилка успішно відправлена в Telegram: {MessageId}", result.TelegramMessageId);
-
                 return result;
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Failed to send error to Telegram");
                 return new SendErrorToTelegramResponse
                 {
                     IsSuccess = false,
-                    Message = $"Failed to send error to Telegram: {ex.Message}"
                 };
             }
         }
