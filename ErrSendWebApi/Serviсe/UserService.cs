@@ -8,7 +8,7 @@ namespace ErrSendWebApi.Serviсe
 {
     public class UserService : IUserService
     {
-        private readonly ConcurrentDictionary<string, User> _users = new();
+        private readonly ConcurrentDictionary<string, User> users = new();
 
         public UserService()
         {
@@ -23,7 +23,7 @@ namespace ErrSendWebApi.Serviсe
 
         public Task<bool> RegisterUserAsync(RegisterRequest request)
         {
-            if (_users.ContainsKey(request.Username))
+            if (users.ContainsKey(request.Username))
             {
                 return Task.FromResult(false);
             }
@@ -36,12 +36,12 @@ namespace ErrSendWebApi.Serviсe
                 Roles = request.Roles ?? new List<string> { "User" }
             };
 
-            return Task.FromResult(_users.TryAdd(request.Username, user));
+            return Task.FromResult(users.TryAdd(request.Username, user));
         }
 
         public Task<User?> ValidateUserAsync(string username, string password)
         {
-            if (_users.TryGetValue(username, out var user))
+            if (users.TryGetValue(username, out var user))
             {
                 if (VerifyPassword(password, user.PasswordHash))
                 {
@@ -53,13 +53,13 @@ namespace ErrSendWebApi.Serviсe
 
         public Task<User?> GetUserByUsernameAsync(string username)
         {
-            _users.TryGetValue(username, out var user);
+            users.TryGetValue(username, out var user);
             return Task.FromResult(user);
         }
 
         public Task<bool> UserExistsAsync(string username)
         {
-            return Task.FromResult(_users.ContainsKey(username));
+            return Task.FromResult(users.ContainsKey(username));
         }
 
         private static string HashPassword(string password)

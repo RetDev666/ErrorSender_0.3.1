@@ -58,8 +58,6 @@ namespace ErrSendPersistensTelegram.Services
                 }
                 else
                 {
-                    logger.LogWarning("Telegram API returned error. Status: {StatusCode}, Content: {Content}", 
-                        response.StatusCode, responseContent);
                     
                     return new SendErrorToTelegramResponse
                     {
@@ -70,7 +68,6 @@ namespace ErrSendPersistensTelegram.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error occurred while sending message to Telegram");
                 
                 return new SendErrorToTelegramResponse
                 {
