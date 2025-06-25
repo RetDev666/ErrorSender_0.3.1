@@ -100,10 +100,10 @@ namespace ErrSendWebApi
                     c.IncludeXmlComments(xmlPath);
                 }
 
-                c.SwaggerDoc("v0.3", new OpenApiInfo
+                c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "ErrorSender API",
-                    Version = "v.0.3",
+                    Version = "v1",
                     Description = "API для відправки помилок в Telegram групу"
                 });
 
@@ -139,6 +139,7 @@ namespace ErrSendWebApi
             });
 
             services.AddSingleton<ICurrentService, CurrentService>();
+            services.AddSingleton<IUserService, UserService>();
             services.AddHttpContextAccessor();
             services.AddScoped<IJwtService, JwtService>();
         }
@@ -164,7 +165,7 @@ namespace ErrSendWebApi
             app.UseSwaggerUI(config =>
             {
                 config.RoutePrefix = string.Empty;
-                config.SwaggerEndpoint("swagger/v1/swagger.json", "ErrorSender API v1");
+                config.SwaggerEndpoint("swagger/v0.3/swagger.json", "ErrorSender API v0.3");
             });
 
             // Додаємо Telegram error reporting middleware (перед іншими exception handlers)

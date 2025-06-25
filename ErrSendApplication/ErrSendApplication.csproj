@@ -10,11 +10,7 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Authorization\" />
-    <Folder Include="DTO\" />
-    <Folder Include="Proceses\" />
-  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />

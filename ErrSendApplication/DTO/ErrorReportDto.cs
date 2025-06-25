@@ -6,12 +6,12 @@ namespace ErrSendApplication.DTO
 {
     public class ErrorReportDto : IMapWith<ErrorReport>
     {
-        public string ErrorMessage { get; set; } 
-        public string Source { get; set; } 
-        public string StackTrace { get; set; } 
-        public string UserId { get; set; } 
-        public string Severity { get; set; } 
-        public string AdditionalInfo { get; set; } 
+        public required string ErrorMessage { get; set; } 
+        public required string Source { get; set; } 
+        public string? StackTrace { get; set; } 
+        public string? UserId { get; set; } 
+        public string Severity { get; set; } = "Error";
+        public string? AdditionalInfo { get; set; } 
 
         public void Mapping(Profile profile)
         {
@@ -26,7 +26,7 @@ namespace ErrSendApplication.DTO
     public class SendErrorToTelegramResponse
     {
         public bool IsSuccess { get; set; }
-        public string Message { get; set; } 
-        public string TelegramMessageId { get; set; } 
+        public required string Message { get; set; } 
+        public string? TelegramMessageId { get; set; } 
     }
 } 

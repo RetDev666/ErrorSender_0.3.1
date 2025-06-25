@@ -37,9 +37,12 @@ namespace ErrSendApplication.Proceses
             }
             catch (Exception ex)
             {
+                logger.LogError(ex, "Error occurred while sending error to Telegram");
+                
                 return new SendErrorToTelegramResponse
                 {
                     IsSuccess = false,
+                    Message = $"Failed to send error to Telegram: {ex.Message}"
                 };
             }
         }

@@ -52,22 +52,30 @@ namespace ErrSendPersistensTelegram.Services
                     return new SendErrorToTelegramResponse
                     {
                         IsSuccess = true,
+                        Message = "Error successfully sent to Telegram",
                         TelegramMessageId = telegramResponse?.Result?.MessageId.ToString() ?? ""
                     };
                 }
                 else
                 {
+                    logger.LogWarning("Telegram API returned error. Status: {StatusCode}, Content: {Content}", 
+                        response.StatusCode, responseContent);
+                    
                     return new SendErrorToTelegramResponse
                     {
                         IsSuccess = false,
+                        Message = $"Telegram API error: {response.StatusCode}"
                     };
                 }
             }
             catch (Exception ex)
             {
+                logger.LogError(ex, "Error occurred while sending message to Telegram");
+                
                 return new SendErrorToTelegramResponse
                 {
                     IsSuccess = false,
+                    Message = $"Exception: {ex.Message}"
                 };
             }
         }

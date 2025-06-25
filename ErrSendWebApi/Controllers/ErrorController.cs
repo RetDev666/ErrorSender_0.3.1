@@ -57,7 +57,8 @@ namespace ErrSendWebApi.Controllers
                 var executionStatus = new ExecutionStatus
                 {
                     Status = "ER",
-                    ErrorCode = 500
+                    ErrorCode = 500,
+                    Errors = { $"Internal server error: {ex.Message}" }
                 };
 
                 return StatusCode(500, new

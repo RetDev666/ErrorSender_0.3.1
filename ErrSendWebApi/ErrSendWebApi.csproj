@@ -25,8 +25,6 @@
     <ProjectReference Include="..\ErrSendPersistensTelegram\ErrSendPersistensTelegram.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ModelsDto\" />
-  </ItemGroup>
+
 
 </Project>

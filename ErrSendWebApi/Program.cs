@@ -1,5 +1,7 @@
 using Serilog.Events;
 using Serilog;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
 namespace ErrSendWebApi
 {
@@ -25,7 +27,20 @@ namespace ErrSendWebApi
                 // TODO: Додати логування в БД коли буде підключена БД
                 // .WriteTo.MSSqlServer(connectionString, "Logs")
                 .CreateLogger();
-            
+
+            try
+            {
+                Log.Information("Starting up");
+                CreateHostBuilder(args).Build().Run();
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Application start-up failed");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

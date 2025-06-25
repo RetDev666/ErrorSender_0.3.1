@@ -3,101 +3,66 @@ using System.ComponentModel.DataAnnotations;
 namespace ErrSendApplication.DTO
 {
     /// <summary>
-    /// DTO для логіну користувача
+    /// Модель запиту на автентифікацію
     /// </summary>
-    public class LoginDto
+    public class AuthRequest
     {
-        /// <summary>
-        /// Ім'я користувача або email
-        /// </summary>
-        [Required(ErrorMessage = "Username є обов'язковим")]
-        public string Username { get; set; } 
+        [Required]
+        public required string Username { get; set; }
 
-        /// <summary>
-        /// Пароль користувача
-        /// </summary>
-        [Required(ErrorMessage = "Password є обов'язковим")]
-        public string Password { get; set; } 
+        [Required]
+        public required string Password { get; set; }
     }
 
     /// <summary>
-    /// Відповідь з JWT токеном
+    /// Модель відповіді з JWT токеном
     /// </summary>
-    public class TokenResponseDto
+    public class AuthResponse
     {
-        /// <summary>
-        /// JWT Access токен
-        /// </summary>
-        public string AccessToken { get; set; } 
-
-        /// <summary>
-        /// Refresh токен для оновлення
-        /// </summary>
-        public string RefreshToken { get; set; } 
-
-        /// <summary>
-        /// Час закінчення дії токена (UTC)
-        /// </summary>
-        public DateTime ExpiresAt { get; set; }
-
-        /// <summary>
-        /// Тип токена (завжди "Bearer")
-        /// </summary>
-        public string TokenType { get; set; } = "Bearer";
+        public required string Token { get; set; }
     }
 
     /// <summary>
-    /// DTO для оновлення токена
+    /// Модель для реєстрації нового користувача
     /// </summary>
-    public class RefreshTokenDto
+    public class RegisterRequest
     {
-        /// <summary>
-        /// Refresh токен
-        /// </summary>
-        [Required(ErrorMessage = "RefreshToken є обов'язковим")]
-        public string RefreshToken { get; set; } 
+        [Required]
+        [MinLength(3)]
+        public required string Username { get; set; }
+
+        [Required]
+        [MinLength(6)]
+        public required string Password { get; set; }
+
+        public string? Email { get; set; }
+        public List<string>? Roles { get; set; }
     }
 
     /// <summary>
-    /// DTO для створення API ключа
+    /// Модель для генерації тестового JWT токена
     /// </summary>
-    public class CreateApiKeyDto
+    public class GenerateTokenRequest
     {
-        /// <summary>
-        /// Назва API ключа
-        /// </summary>
-        [Required(ErrorMessage = "Name є обов'язковим")]
-        public string Name { get; set; } 
+        [Required]
+        public required string Username { get; set; }
 
-        /// <summary>
-        /// Дата закінчення дії (опціонально)
-        /// </summary>
-        public DateTime? ExpiresAt { get; set; }
+        public List<string>? Roles { get; set; }
+
+        public int ExpiryMinutes { get; set; } = 60;
+
+        public Dictionary<string, string>? CustomClaims { get; set; }
     }
 
     /// <summary>
-    /// Відповідь з API ключем
+    /// Модель користувача в системі
     /// </summary>
-    public class ApiKeyResponseDto
+    public class User
     {
-        /// <summary>
-        /// API ключ
-        /// </summary>
-        public string ApiKey { get; set; } 
-
-        /// <summary>
-        /// Назва ключа
-        /// </summary>
-        public string Name { get; set; } 
-
-        /// <summary>
-        /// Дата створення
-        /// </summary>
-        public DateTime CreatedAt { get; set; }
-
-        /// <summary>
-        /// Дата закінчення дії
-        /// </summary>
-        public DateTime? ExpiresAt { get; set; }
+        public required string Username { get; set; }
+        public required string PasswordHash { get; set; }
+        public string? Email { get; set; }
+        public List<string> Roles { get; set; } = new();
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 } 

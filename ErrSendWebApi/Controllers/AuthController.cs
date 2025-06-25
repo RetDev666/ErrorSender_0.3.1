@@ -1,4 +1,5 @@
-using ErrSendWebApi.ModelsDto;
+using ErrSendApplication.DTO;
+using ErrSendApplication.Interfaces;
 using ErrSendWebApi.Serviсe;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,10 +16,40 @@ namespace ErrSendWebApi.Controllers
     public class AuthController : BaseController
     {
         private readonly IJwtService jwtService;
+        private readonly IUserService userService;
 
-        public AuthController(IJwtService jwtService)
+        public AuthController(IJwtService jwtService, IUserService userService)
         {
             this.jwtService = jwtService;
+            this.userService = userService;
+        }
+
+        /// <summary>
+        /// Реєстрація нового користувача
+        /// </summary>
+        /// <param name="request">Дані для реєстрації</param>
+        /// <returns>Результат реєстрації</returns>
+        /// <response code="200">Користувач успішно зареєстрований</response>
+        /// <response code="400">Помилка валідації або користувач вже існує</response>
+        [HttpPost("register")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(AuthResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<ActionResult<AuthResponse>> Register([FromBody] RegisterRequest request)
+        {
+            if (await userService.UserExistsAsync(request.Username))
+            {
+                return BadRequest("Користувач з таким ім'ям вже існує");
+            }
+
+            var success = await userService.RegisterUserAsync(request);
+            if (!success)
+            {
+                return BadRequest("Помилка при реєстрації користувача");
+            }
+
+            var token = jwtService.GenerateToken(request.Username);
+            return Ok(new AuthResponse { Token = token });
         }
 
         /// <summary>
@@ -32,17 +63,16 @@ namespace ErrSendWebApi.Controllers
         [AllowAnonymous]
         [ProducesResponseType(typeof(AuthResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
-        public ActionResult<AuthResponse> Login([FromBody] AuthRequest request)
+        public async Task<ActionResult<AuthResponse>> Login([FromBody] AuthRequest request)
         {
-            // For demo purposes, we're using a simple authentication
-            // In production, you should validate against a database
-            if (request.Username == "admin" && request.Password == "admin")
+            var user = await userService.ValidateUserAsync(request.Username, request.Password);
+            if (user == null)
             {
-                var token = jwtService.GenerateToken(request.Username);
-                return Ok(new AuthResponse { Token = token });
+                return Unauthorized("Невірний логін або пароль");
             }
 
-            return Unauthorized("Invalid username or password");
+            var token = jwtService.GenerateToken(request.Username);
+            return Ok(new AuthResponse { Token = token });
         }
 
         /// <summary>

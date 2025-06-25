@@ -32,9 +32,18 @@ namespace ErrSendApplication.Behaviors
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
             var requestName = typeof(TRequest).Name;
-            Log.Information("Request: {Name} --- {@Request} ", requestName, request);
+            var userName = currentService.GetCurrentUserName() ?? "Anonymous";
+            var userId = currentService.GetCurrentUserId() ?? "Unknown";
+            
+            Log.Information("Request: {Name} | User: {UserName} ({UserId}) | {@Request}", 
+                requestName, userName, userId, request);
 
+            var startTime = DateTime.UtcNow;
             var response = await next();
+            var duration = DateTime.UtcNow - startTime;
+
+            Log.Information("Request completed: {Name} | Duration: {Duration}ms", 
+                requestName, duration.TotalMilliseconds);
 
             return response;
         }
