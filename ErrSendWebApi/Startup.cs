@@ -5,9 +5,9 @@ using ErrSendApplication.Mappings;
 using ErrSendPersistensTelegram;
 using ErrSendWebApi.ExceptionMidlevare;
 using ErrSendWebApi.Middleware;
-using ErrSendWebApi.Middleware.Culture;
+
 using ErrSendWebApi.Serviсe;
-using ErrSendWebApi.TimeZone;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.IdentityModel.Tokens;
@@ -49,14 +49,12 @@ namespace ErrSendWebApi
                 config.ExpiryInMinutes = tokenConfig.ExpiryInMinutes;
             });
 
-            //Додаємо профілі зборок в ДІ конвеєр через автомапер.
             services.AddAutoMapper(config =>
             {
                 config.AddProfile(new AssemblyMappingProfile(Assembly.GetExecutingAssembly()));
                 config.AddProfile(new AssemblyMappingProfile(typeof(IHttpClientWr).Assembly));
             });
 
-            //Підключаємо зборки в ДІ через Медіатр
             services.AddApplication(Configuration);
             services.AddPersistenceTelegram(Configuration);
             services.AddControllers();
@@ -80,7 +78,6 @@ namespace ErrSendWebApi
                 };
             });
 
-            //Політика підключення із всіх а не тільки через ІдентітіСрв не працювало б якщо ми б спробували із 1с наприклад підключитись.
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy =>
@@ -117,7 +114,7 @@ namespace ErrSendWebApi
                     Description = "Введіть JWT Token у форматі: Bearer {token}"
                 });
 
-                c.OperationFilter<AddTimeAndTimeZoneOperationFilter>(); // Додавання кастомного фільтра
+
 
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
@@ -144,13 +141,10 @@ namespace ErrSendWebApi
             services.AddScoped<IJwtService, JwtService>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            // Встановлюємо порожній WebRootPath, щоб не шукати wwwroot папку
             env.WebRootPath = string.Empty;
 
-            //Отримує ІР компа із якого прийшов запит але додатково налаштовуємо в конфігах NGINX.
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
@@ -168,21 +162,16 @@ namespace ErrSendWebApi
                 config.SwaggerEndpoint("swagger/v0.3/swagger.json", "ErrorSender API v0.3");
             });
 
-            // Додаємо Telegram error reporting middleware (перед іншими exception handlers)
             app.UseTelegramErrorReporting();
-            
             app.UseCustomExceptionHandler();
-            app.UseCulture();
             app.UseRouting();
             
-            // HTTPS redirection та CORS - підключення із всіх джерел
             if (!env.IsDevelopment())
             {
                 app.UseHttpsRedirection();
             }
             app.UseCors("AllowAll");
 
-            //Додаємо авторизацію і аутентифікацію по токену.
             app.UseAuthentication();
             app.UseAuthorization();
 

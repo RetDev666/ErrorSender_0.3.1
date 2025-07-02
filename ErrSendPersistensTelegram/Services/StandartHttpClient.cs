@@ -1,6 +1,4 @@
-﻿using ErrSendApplication.Common.Configs;
-using ErrSendApplication.Interfaces;
-using Microsoft.Extensions.Options;
+﻿using ErrSendApplication.Interfaces;
 using System.Net.Http.Headers;
 
 namespace ErrSendPersistensTelegram.Services
@@ -8,14 +6,12 @@ namespace ErrSendPersistensTelegram.Services
     public class StandartHttpClient : IHttpClientWr
     {
         private readonly HttpClient httpClient;
-        private BaseAddressCfg baseAddressCfg;
         private bool disposed = false;
 
-        public StandartHttpClient(HttpClient httpClient, IOptions<BaseAddressCfg> baseAddressCfg)
+        public StandartHttpClient(HttpClient httpClient)
         {
-            this.baseAddressCfg = baseAddressCfg.Value;
             this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-            this.httpClient.Timeout = TimeSpan.FromMinutes(180); // Встановити тайм-аут на 120 хвилин ПОКИ КОСТИЛЬ
+            this.httpClient.Timeout = TimeSpan.FromMinutes(10); // Розумний тайм-аут
         }
 
         public async Task<HttpResponseMessage> PostAsync(string url, HttpContent content, string? token = null)
